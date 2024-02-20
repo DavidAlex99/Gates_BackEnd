@@ -4,24 +4,24 @@ from django.shortcuts import render, HttpResponse
 
 #
 def home(request):
-    return HttpResponse("Inicio")
+    return render(request, "gatesApp/home.html")
 
 # vista para el menu
 def servicios(request):
-    return HttpResponse("Servicios")
+    return render(request, "gatesApp/servicios.html")
 
 # vista para Sobre Nosotros
 def acerca(request):
-    return HttpResponse("Acerca")
+    return render(request, "gatesApp/acerca.html")
 
 #vista para el contacto
 def contacto(request):
-    return HttpResponse("Contacto")
+    return render(request, "gatesApp/contacto.html")
 
 #vista para la ubicacion
 def ubicacion(request):
-    return HttpResponse("Ubicacion")
+    return render(request, "gatesApp/ubicacion.html")
 
 # vista para la galeria
 def calendario(request):
-    return HttpResponse("Calendario")
+    return render(request, "gatesApp/calendario.html")
