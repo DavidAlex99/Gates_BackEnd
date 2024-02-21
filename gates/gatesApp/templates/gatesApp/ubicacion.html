@@ -1,10 +1,10 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    html de la ubicacion
-</body>
-</html>
+<!-- se indic que va a heredar de base.html -->
+{% extends "gatesApp/base.html" %}
+
+<!-- se carga lo que esta en la carpeta static -->
+{% load static %}  
+
+<!-- aqui va el contenido cambiante -->
+{% block content %}
+
+{% endblock %}
