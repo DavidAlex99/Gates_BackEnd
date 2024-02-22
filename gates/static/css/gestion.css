@@ -1,0 +1,15 @@
+ .main-content {
+    display: grid;
+    grid-template-columns: 50% 50%;
+  }
+  .leftPanel {
+    background-color: #add8e6; /* Light blue background */
+    flex: 1;
+    margin-right: 20px;
+    padding: 20px;
+  }
+  .rightPanel {
+    background-color: #fcd5ce; /* Light coral background */
+    flex: 2;
+    padding: 20px;
+  }

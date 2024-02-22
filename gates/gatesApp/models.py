@@ -23,9 +23,24 @@ class Medico(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
 
 class Servicio(models.Model):
+    nombre = models.CharField(max_length=100)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    descripcion = models.TextField()
+    imagen = models.ImageField(upload_to='servicios_images')
+    
+class Cita(models.Model):
+    nombre = models.CharField(max_length=100)
+    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    fecha_hora = models.DateTimeField()
+    servicios = models.ManyToManyField(Servicio)
+
+class Calendario(models.Model):
+    citas = models.ManyToManyField(Cita)
+
+class Contacto(models.Model):
     telefono = models.CharField(max_length=20)
     email = models.EmailField()
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE)
 
     def agregar_contacto(self):
-        pass    
+        pass

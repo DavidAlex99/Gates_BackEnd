@@ -26,5 +26,6 @@ def ubicacion(request):
 def calendario(request):
     return render(request, "calendario.html")
 
+# se lollama desde servicios
 def subir(request):
     return render(request, "subir.html")
