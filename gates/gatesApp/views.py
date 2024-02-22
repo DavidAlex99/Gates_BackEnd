@@ -25,3 +25,6 @@ def ubicacion(request):
 # vista para la galeria
 def calendario(request):
     return render(request, "calendario.html")
+
+def subir(request):
+    return render(request, "subir.html")
