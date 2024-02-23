@@ -10,66 +10,22 @@
 <div>
     <button type="button" class="btn btn-primary" style="color: white;"><a href="{% url 'Subir' %}">Agregar servicio</a></button>
 </div>
+
 <div class="row">
-    <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
-        <div class="card-header">Header</div>
-        <div class="card-body">
-            <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="{% static 'assets/img/serviceUnit.jpg' %}" alt="..." />
+    <!-- aqui se hace un for para cada servicio -->
+    {% for servicio in servicios %}
+
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
+            <div class="card-header">{{servicio.nombre}}</div>
+            <div class="card-body">
+                <img src="{{servicio.imagen.url}}" class="card-img-top">
+            </div>
         </div>
-        <button type="button" class="btn btn-primary"><a href="{% url 'Subir' %}">Mas informacion</a></button>
     </div>
-    <div class="card bg-secondary mb-3" style="max-width: 20rem;">
-        <div class="card-header">Header</div>
-        <div class="card-body">
-            <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="{% static 'assets/img/serviceUnit.jpg' %}" alt="..." />
-        </div>
-        <button type="button" class="btn btn-primary"><a href="{% url 'Subir' %}">Mas informacion</a></button>
-    </div>
-    <div class="card text-white bg-success mb-3" style="max-width: 20rem;">
-        <div class="card-header">Header</div>
-        <div class="card-body">
-            <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="{% static 'assets/img/serviceUnit.jpg' %}" alt="..." />
-        </div>
-        <button type="button" class="btn btn-primary"><a href="{% url 'Subir' %}">Mas informacion</a></button>
-    </div>
-    <div class="card text-white bg-danger mb-3" style="max-width: 20rem;">
-        <div class="card-header">Header</div>
-        <div class="card-body">
-            <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="{% static 'assets/img/serviceUnit.jpg' %}" alt="..." />
-        </div>
-        <button type="button" class="btn btn-primary"><a href="{% url 'Subir' %}">Mas informacion</a></button>
-        
-    </div>
-    <div class="card text-white bg-warning mb-3" style="max-width: 20rem;">
-        <div class="card-header">Header</div>
-        <div class="card-body">
-            <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="{% static 'assets/img/serviceUnit.jpg' %}" alt="..." />
-        </div>
-        <button type="button" class="btn btn-primary"><a href="{% url 'Subir' %}">Mas informacion</a></button>
-    </div>
-    <div class="card text-white bg-info mb-3" style="max-width: 20rem;">
-        <div class="card-header">Header</div>
-        <div class="card-body">
-            <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="{% static 'assets/img/serviceUnit.jpg' %}" alt="..." />
-        </div>
-        <button type="button" class="btn btn-primary"><a href="{% url 'Subir' %}">Mas informacion</a></button>
-    </div>
-    <div class="card bg-light mb-3" style="max-width: 20rem;">
-        <div class="card-header">Header</div>
-        <div class="card-body">
-            <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="{% static 'assets/img/serviceUnit.jpg' %}" alt="..." />
-        </div>
-        <button type="button" class="btn btn-primary"><a href="{% url 'Subir' %}">Mas informacion</a></button>
-    </div>
-    <div class="card text-white bg-dark mb-3" style="max-width: 20rem;">
-        <div class="card-header">
-            Header
-        </div>
-        <div class="card-body">
-            <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="{% static 'assets/img/serviceUnit.jpg' %}" alt="..." />
-        </div>
-        <button type="button" class="btn btn-primary"><a href="{% url 'Subir' %}">Mas informacion</a></button>
-    </div>
+    {% endfor %}
 </div>
+
+
 
 {% endblock %}

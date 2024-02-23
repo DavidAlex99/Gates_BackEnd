@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
 from .forms import ServicioForm
+from .models import Servicio
 
 
 # Create your views here.
@@ -10,8 +11,9 @@ def home(request):
 
 # vista para el menu
 def servicios(request):
-
-    return render(request, "servicios.html")
+    # aqui se renderizaran los servicios de la base de datos
+    servicios = Servicio.objects.all()
+    return render(request, "servicios.html", {"servicios": servicios})
 
 # vista para el menu
 def subir(request):

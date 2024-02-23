@@ -19,6 +19,9 @@ from django.urls import path
 # imortacion de las vistass
 from gatesApp import views
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('', views.home, name="Home"),
@@ -28,5 +31,6 @@ urlpatterns = [
     path('calendario/', views.calendario, name="Calendario"),
     path('contacto/', views.contacto, name="Contacto"),
     path('servicios/subir/', views.subir, name="Subir"),
-    
 ]
+
+urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
