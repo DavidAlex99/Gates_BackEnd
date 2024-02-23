@@ -16,8 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-# imortacion de las vistas
+# imortacion de las vistass
 from gatesApp import views
+
 
 urlpatterns = [
     path('', views.home, name="Home"),
@@ -26,5 +27,6 @@ urlpatterns = [
     path('ubicacion/', views.ubicacion, name="Ubicacion"),
     path('calendario/', views.calendario, name="Calendario"),
     path('contacto/', views.contacto, name="Contacto"),
-    path('servicios/subir/', views.subir, name="Subir")
+    path('servicios/subir/', views.subir, name="Subir"),
+    
 ]

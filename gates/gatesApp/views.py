@@ -1,4 +1,6 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
+from .forms import ServicioForm
+
 
 # Create your views here.
 
@@ -8,7 +10,21 @@ def home(request):
 
 # vista para el menu
 def servicios(request):
+
     return render(request, "servicios.html")
+
+# vista para el menu
+def subir(request):
+    if request.method == "POST":
+        formulario_servicio = ServicioForm(request.POST, request.FILES) 
+        if formulario_servicio.is_valid():
+            formulario_servicio.save()  
+            return redirect('Home') 
+        else:
+            print(formulario_servicio.errors)
+    else:
+        formulario_servicio = ServicioForm()
+    return render(request, "subir.html", {'miFormulario': formulario_servicio})
 
 # vista para Sobre Nosotros
 def acerca(request):
@@ -26,6 +42,3 @@ def ubicacion(request):
 def calendario(request):
     return render(request, "calendario.html")
 
-# se lollama desde servicios
-def subir(request):
-    return render(request, "subir.html")
