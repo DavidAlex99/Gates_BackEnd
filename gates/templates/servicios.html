@@ -8,23 +8,27 @@
 {% block content %}
 
 <div>
-    <button type="button" class="btn btn-primary" style="color: white;"><a href="{% url 'Subir' %}">Agregar servicio</a></button>
+    <button type="button" class="btn btn-primary" style="color: white;"><a href="{% url 'SubirServicio' %}">Agregar servicio</a></button>
 </div>
+
+
 
 <div class="row">
     <!-- aqui se hace un for para cada servicio -->
     {% for servicio in servicios %}
-
-    <div class="col-md-4">
-        <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
-            <div class="card-header">{{servicio.nombre}}</div>
-            <div class="card-body">
-                <img src="{{servicio.imagen.url}}" class="card-img-top">
+        <div class="col-md-4">
+            <div class="card border-primary mb-3" style="max-width: 20rem;">
+                <div class="card-header">{{servicio.nombre}}</div>
+                <div class="card-body">
+                    <img src="{{servicio.imagen.url}}" class="card-img-top">
+                    <p class="card-text">{{servicio.precio}}</p>
+                </div>
             </div>
         </div>
-    </div>
     {% endfor %}
 </div>
+
+
 
 
 

@@ -13,3 +13,19 @@
     flex: 2;
     padding: 20px;
   }
+
+.card {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card-img-top {
+    height: 200px; 
+    object-fit: cover; 
+    width: 100%;
+}
+
+.card-body {
+    min-height: 150px; 
+}

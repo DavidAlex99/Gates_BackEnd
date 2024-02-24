@@ -16,7 +16,7 @@ def servicios(request):
     return render(request, "servicios.html", {"servicios": servicios})
 
 # vista para el menu
-def subir(request):
+def subirServicio(request):
     if request.method == "POST":
         formulario_servicio = ServicioForm(request.POST, request.FILES) 
         if formulario_servicio.is_valid():
@@ -26,7 +26,7 @@ def subir(request):
             print(formulario_servicio.errors)
     else:
         formulario_servicio = ServicioForm()
-    return render(request, "subir.html", {'miFormulario': formulario_servicio})
+    return render(request, "subirServicio.html", {'formulario_servicio': formulario_servicio})
 
 # vista para Sobre Nosotros
 def acerca(request):

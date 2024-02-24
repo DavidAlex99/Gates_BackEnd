@@ -30,7 +30,7 @@ urlpatterns = [
     path('ubicacion/', views.ubicacion, name="Ubicacion"),
     path('calendario/', views.calendario, name="Calendario"),
     path('contacto/', views.contacto, name="Contacto"),
-    path('servicios/subir/', views.subir, name="Subir"),
+    path('servicios/subirServicio/', views.subirServicio, name="SubirServicio"),
 ]
 
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
