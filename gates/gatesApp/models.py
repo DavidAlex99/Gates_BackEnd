@@ -11,6 +11,7 @@ class Paciente(models.Model):
 
 # ubicacion del consultorio
 class Ubicacion(models.Model):
+    imagen = models.ImageField(upload_to='imagen_ubicacion')
     direccion = models.CharField(max_length=255)
     direccion_secundaria = models.CharField(max_length=255, blank=True, null=True)
     created=models.DateTimeField(auto_now_add=True)
@@ -52,8 +53,9 @@ class Calendario(models.Model):
     updated=models.DateTimeField(auto_now_add=True)
 
 class Contacto(models.Model):
+    imagen = models.ImageField(upload_to='contacto')
     telefono = models.CharField(max_length=20)
-    email = models.EmailField()
+    correo = models.EmailField()
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE)
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now_add=True)
