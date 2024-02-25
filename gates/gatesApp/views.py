@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect
-from .forms import ServicioForm
+from .forms import ServicioForm, ContactoForm, SobreNosForm, UbicacionForm
 from .models import Servicio
 
 
@@ -29,16 +29,61 @@ def subirServicio(request):
     return render(request, "subirServicio.html", {'formulario_servicio': formulario_servicio})
 
 # vista para Sobre Nosotros
-def acerca(request):
-    return render(request, "acerca.html")
+#def acerca(request, username):
+def acerca(request, username):
+# Asegúrate de que el usuario logueado es el mismo que el del URL.
+    #if request.user.username != username:
+        #return redirect('user_profile', username=request.user.username)
+
+    if request.method == "POST":
+        formulario_servicio = SobreNosForm(request.POST, request.FILES) 
+        if formulario_servicio.is_valid():
+            formulario_servicio.save()  
+            #return redirect('Acerca', username=username) 
+            return redirect('Acerca')
+        else:
+            print(formulario_servicio.errors)
+    else:
+        formulario_servicio = SobreNosForm()
+    return render(request, "acerca.html", {'miFormularioSobreNos': formulario_servicio})
 
 #vista para el contacto
+#def contacto(request, username):
 def contacto(request):
-    return render(request, "contacto.html")
+    # Asegúrate de que el usuario logueado es el mismo que el del URL.
+    #if request.user.username != username:
+        #return redirect('user_profile', username=request.user.username)
+
+    if request.method == "POST":
+        formulario_servicio = ContactoForm(request.POST, request.FILES) 
+        if formulario_servicio.is_valid():
+            formulario_servicio.save()  
+            #return redirect('Home', username=username)
+            return redirect('Home')  
+        else:
+            print(formulario_servicio.errors)
+    else:
+        formulario_servicio = ContactoForm()
+    return render(request, "contacto.html", {'miFormularioContacto': formulario_servicio})
 
 #vista para la ubicacion
+#def ubicacion(request, username):
 def ubicacion(request):
-    return render(request, "ubicacion.html")
+    # Asegúrate de que el usuario logueado es el mismo que el del URL.
+    #if request.user.username != username:
+        #return redirect('user_profile', username=request.user.username)
+
+    if request.method == "POST":
+        formulario_servicio = UbicacionForm(request.POST, request.FILES) 
+        if formulario_servicio.is_valid():
+            formulario_servicio.save()  
+            #return redirect('Home', username=username) 
+            return redirect('Home') 
+        else:
+            print(formulario_servicio.errors)
+    else:
+        formulario_servicio = UbicacionForm()
+    return render(request, "ubicacion.html", {'miFormularioUbicacion': formulario_servicio})
 
 # vista para la galeria
 def calendario(request):

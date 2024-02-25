@@ -1,10 +1,26 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
+
 
 # Create your models here.
+class Consultorio(models.Model):
+    nombre = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=100)
+    created=models.DateTimeField(auto_now_add=True)
+    updated=models.DateTimeField(auto_now_add=True)
+
+class Medico(models.Model):
+    nombre = models.CharField(max_length=100)
+    edad = models.IntegerField()
+    especialidad = models.CharField(max_length=100)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    created=models.DateTimeField(auto_now_add=True)
+    updated=models.DateTimeField(auto_now_add=True)
 
 class Paciente(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     edad = models.IntegerField()
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now_add=True)
@@ -17,43 +33,32 @@ class Ubicacion(models.Model):
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now_add=True)
 
-class Consultorio(models.Model):
-    ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE)
-    created=models.DateTimeField(auto_now_add=True)
-    updated=models.DateTimeField(auto_now_add=True)
-
-class Medico(models.Model):
-    nombre = models.CharField(max_length=100)
-    edad = models.IntegerField()
-    especialidad = models.CharField(max_length=100)
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
-    created=models.DateTimeField(auto_now_add=True)
-    updated=models.DateTimeField(auto_now_add=True)
-
 class Servicio(models.Model):
     nombre = models.CharField(max_length=100)
     precio = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
     Hora_estimacion = models.CharField(max_length=100)
-    imagen = models.ImageField(upload_to='servicios_images')
+    imagen = models.ImageField(upload_to='imagen_servicio')
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now_add=True)
-    
+
+class Calendario(models.Model):
+    created=models.DateTimeField(auto_now_add=True)
+    updated=models.DateTimeField(auto_now_add=True)
+
 class Cita(models.Model):
     nombre = models.CharField(max_length=100)
-    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    #muchas citas pueden estar contenidas en un diccionario
+    calendario = models.ForeignKey(Calendario, on_delete=models.CASCADE, related_name='citas_calendario')
+    # una cita esta ligado a un paciente
+    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, related_name='citas_paciente')
     fecha_hora = models.DateTimeField()
     servicios = models.ManyToManyField(Servicio)
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now_add=True)
 
-class Calendario(models.Model):
-    citas = models.ManyToManyField(Cita)
-    created=models.DateTimeField(auto_now_add=True)
-    updated=models.DateTimeField(auto_now_add=True)
-
 class Contacto(models.Model):
-    imagen = models.ImageField(upload_to='contacto')
+    imagen = models.ImageField(upload_to='imagen_contacto')
     telefono = models.CharField(max_length=20)
     correo = models.EmailField()
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE)
@@ -62,3 +67,13 @@ class Contacto(models.Model):
 
     def agregar_contacto(self):
         pass
+
+class SobreNos(models.Model):
+    descrpcion = models.TextField()
+    imagen = models.ImageField(upload_to='imagen_sobre_nos')
+    created=models.DateTimeField(auto_now_add=True)
+    updated=models.DateTimeField(auto_now_add=True)
+
+    def agregar_descripcion(self, descripcion):
+        self.descrpcion = descripcion
+        return self.save()
