@@ -8,7 +8,7 @@
 {% block content %}
 
 <div>
-    <button type="button" class="btn btn-primary" style="color: white;"><a href="{% url 'SubirServicio' %}">Agregar servicio</a></button>
+    <button type="button" class="btn btn-primary" style="color: white;"><a href="{% url 'SubirServicio' username=user.username %}">Agregar servicio</a></button>
 </div>
 
 <div class="row">
