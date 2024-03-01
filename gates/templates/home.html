@@ -7,6 +7,11 @@
 <!-- aqui va el contenido cambiante -->
 {% block content %}
 
+<div>
+    <button type="button" class="btn btn-primary" style="color: white;"><a href="{% url 'Crear_medico' username=user.username %}">Crear medico</a></button>
+</div>
+
+
 <p>Poner algo para la plantilla home</p>
 
 {% endblock %}

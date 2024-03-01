@@ -12,10 +12,10 @@ class Consultorio(models.Model):
     updated=models.DateTimeField(auto_now_add=True)
 
 class Medico(models.Model):
+    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100)
     edad = models.IntegerField()
     especialidad = models.CharField(max_length=100)
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now_add=True)
 
@@ -59,7 +59,7 @@ class Cita(models.Model):
 
 class Contacto(models.Model):
     imagen = models.ImageField(upload_to='imagen_contacto')
-    telefono = models.CharField(max_length=20)
+    telefono = models.IntegerField(null=True, blank=True)
     correo = models.EmailField()
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE)
     created=models.DateTimeField(auto_now_add=True)

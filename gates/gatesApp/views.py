@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
-from .forms import ServicioForm, ContactoForm, SobreNosForm, UbicacionForm
-from .models import Servicio
+from .forms import ServicioForm, ContactoForm, SobreNosForm, UbicacionForm, MedicoForm
+from .models import Servicio, Contacto, Medico
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, logout
 from .forms import CustomLoginForm
@@ -38,9 +38,23 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
 
-# Create your views here.
+def crear_medico(request, username):
+    if request.user.username != username:
+        return redirect('user_profile', username=request.user.username)
+    
+    if request.method == 'POST':
+        formulario_servicio = MedicoForm(request.POST, request.FILES)
+        if formulario_servicio.is_valid():
+            medico = formulario_servicio.save(commit=False)
+            medico.usuario = request.user  # Asigna el usuario actual al objeto medico
+            medico.save()
+            return redirect('Servicios', username=username)  # Reemplaza con el nombre real de la vista
+        else:
+            print(formulario_servicio.errors)
+    else:
+        formulario_servicio = MedicoForm()
+    return render(request, 'crear_medico.html', {'miFormularioMedico': formulario_servicio})
 
-#
 def home(request):
     return render(request, "home.html")
 
@@ -54,12 +68,16 @@ def servicios(request, username):
     return render(request, "servicios.html", {"servicios": servicios})
 
 # vista para el menu
-def subirServicio(request):
+def subirServicio(request, username):
+    # Asegúrate de que el usuario logueado es el mismo que el del URL.
+    if request.user.username != username:
+        return redirect('user_profile', username=request.user.username)
+
     if request.method == "POST":
         formulario_servicio = ServicioForm(request.POST, request.FILES) 
         if formulario_servicio.is_valid():
             formulario_servicio.save()  
-            return redirect('Home') 
+            return redirect('Servicios', username=username) 
         else:
             print(formulario_servicio.errors)
     else:
@@ -84,21 +102,37 @@ def acerca(request, username):
     return render(request, "acerca.html", {'miFormularioSobreNos': formulario_servicio})
 
 #vista para el contacto
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import ContactoForm
+from .models import Contacto, Medico
+
 def contacto(request, username):
     # Asegúrate de que el usuario logueado es el mismo que el del URL.
     if request.user.username != username:
         return redirect('user_profile', username=request.user.username)
 
+    medico = get_object_or_404(Medico, usuario=request.user)
+    # Intenta obtener el contacto existente del médico.
+    # Si no existe, crea uno nuevo sin guardarlo aún en la base de datos.
+    contacto, created = Contacto.objects.get_or_create(medico=medico, defaults={})
+    
     if request.method == "POST":
-        formulario_servicio = ContactoForm(request.POST, request.FILES) 
-        if formulario_servicio.is_valid():
-            formulario_servicio.save()  
+        form = ContactoForm(request.POST, request.FILES, instance=contacto)
+        if form.is_valid():
+            contacto = form.save(commit=False)
+            # Asegúrate de que el campo teléfono se establezca adecuadamente
+            if not contacto.telefono:
+                contacto.telefono = 'Algún valor por defecto o lógica para asignar un teléfono'
+            contacto.save()
             return redirect('Home', username=username)
-        else:
-            print(formulario_servicio.errors)
     else:
-        formulario_servicio = ContactoForm()
-    return render(request, "contacto.html", {'miFormularioContacto': formulario_servicio})
+        form = ContactoForm(instance=contacto)
+
+    return render(request, "contacto.html", {
+        'form': form,
+        'contacto': contacto,
+        'created': created
+    })
 
 #vista para la ubicacion
 def ubicacion(request, username):

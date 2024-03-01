@@ -35,7 +35,8 @@ urlpatterns = [
     path('<str:username>/calendario/', views.calendario, name="Calendario"),
     path('<str:username>/contacto/', views.contacto, name="Contacto"),
     path('<str:username>/servicios/subirServicio/', views.subirServicio, name="SubirServicio"),
-        # para el inciio de sesion
+    path('<str:username>/medico/crear/', views.crear_medico, name='Crear_medico'), 
+    # para el inciio de sesion
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', register, name='register'),
