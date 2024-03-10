@@ -3,77 +3,103 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 
+# el medicodel consultorio
+class Medico(models.Model):
+    ESPECIALIDAD = [
+        # Tus opciones de especialidades...
+    ]
 
-# Create your models here.
-class Consultorio(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
-    created=models.DateTimeField(auto_now_add=True)
-    updated=models.DateTimeField(auto_now_add=True)
-
-class Medico(models.Model):
-    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    nombre = models.CharField(max_length=100)
     edad = models.IntegerField()
-    especialidad = models.CharField(max_length=100)
-    created=models.DateTimeField(auto_now_add=True)
-    updated=models.DateTimeField(auto_now_add=True)
+    imagen = models.ImageField(upload_to='imagen_medico')
+    especialidad = models.CharField(max_length=15, choices=ESPECIALIDAD, default='OTRO')
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)
+    
+    # Otros campos y métodos relevantes para Medico...
 
 class Paciente(models.Model):
-    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    edad = models.IntegerField()
-    created=models.DateTimeField(auto_now_add=True)
-    updated=models.DateTimeField(auto_now_add=True)
-
-# ubicacion del consultorio
-class Ubicacion(models.Model):
-    imagen = models.ImageField(upload_to='imagen_ubicacion')
-    direccion = models.CharField(max_length=255)
-    direccion_secundaria = models.CharField(max_length=255, blank=True, null=True)
-    created=models.DateTimeField(auto_now_add=True)
-    updated=models.DateTimeField(auto_now_add=True)
-
-class Servicio(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100)
-    precio = models.CharField(max_length=100)
-    descripcion = models.CharField(max_length=100)
-    Hora_estimacion = models.CharField(max_length=100)
-    imagen = models.ImageField(upload_to='imagen_servicio')
-    created=models.DateTimeField(auto_now_add=True)
-    updated=models.DateTimeField(auto_now_add=True)
+    
+    # Otros campos y métodos relevantes para Paciente...
 
-class Calendario(models.Model):
-    created=models.DateTimeField(auto_now_add=True)
-    updated=models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.nombre
+
+class Horario(models.Model):
+    medico = models.ForeignKey(Medico, related_name='horarios', on_delete=models.CASCADE)
+    dia = models.DateField()
+    hora_inicio = models.TimeField()
+    hora_fin = models.TimeField()
+
+    def __str__(self):
+        return f"Horario de {self.medico.nombre} el {self.dia} de {self.hora_inicio} a {self.hora_fin}"
 
 class Cita(models.Model):
-    nombre = models.CharField(max_length=100)
-    #muchas citas pueden estar contenidas en un diccionario
-    calendario = models.ForeignKey(Calendario, on_delete=models.CASCADE, related_name='citas_calendario')
-    # una cita esta ligado a un paciente
-    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, related_name='citas_paciente')
-    fecha_hora = models.DateTimeField()
-    servicios = models.ManyToManyField(Servicio)
-    created=models.DateTimeField(auto_now_add=True)
-    updated=models.DateTimeField(auto_now_add=True)
+    ESTADO = [
+        # Tus opciones de estado de cita...
+    ]
 
+    medico = models.ForeignKey(Medico, related_name='citas', on_delete=models.CASCADE)
+    paciente = models.ForeignKey(Paciente, related_name='citas', on_delete=models.SET_NULL, null=True, blank=True)
+    horario = models.ForeignKey(Horario, related_name='citas', on_delete=models.SET_NULL, null=True, blank=True)
+    estado = models.CharField(max_length=15, choices=ESTADO, default='DISPONIBLE')
+    fecha_hora_inicio = models.DateTimeField()
+    fecha_hora_fin = models.DateTimeField()
+    motivo_consulta = models.TextField(blank=True, null=True)
+    notas = models.TextField(blank=True, null=True)
+    
+    # Otros campos y métodos relevantes para Cita...
+
+    def __str__(self):
+        return f"Cita para {self.medico.nombre} el {self.fecha_hora_inicio.strftime('%Y-%m-%d %H:%M')}"
+
+
+# datos contacto van a estar apgados al consultorio
 class Contacto(models.Model):
-    imagen = models.ImageField(upload_to='imagen_contacto')
-    telefono = models.IntegerField(null=True, blank=True)
+    descripcion = models.TextField()
+    direccion = models.CharField(max_length=255)
+    direccion_secundaria = models.CharField(max_length=255, blank=True, null=True)
     correo = models.EmailField()
-    medico = models.ForeignKey(Medico, on_delete=models.CASCADE)
+    telefono = models.CharField(max_length=20) 
+    # campos que van a servir para el api google maps
+    latitud = models.FloatField(null=True, blank=True)  # Nuevo campo para latitud
+    longitud = models.FloatField(null=True, blank=True)  # Nuevo campo para longitud
+    medico = models.OneToOneField(Medico, related_name='contacto', on_delete=models.CASCADE)
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now_add=True)
 
-    def agregar_contacto(self):
-        pass
+# multiples imagenes como lugares referenciales etc
+class ImagenContacto(models.Model):
+    contacto = models.ForeignKey(Contacto, related_name='imagenesContacto', on_delete=models.CASCADE)
+    imagen = models.ImageField(upload_to='imagen_contacto')
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)
 
+
+# los  datos sobbreNos estan apegados a un consultorio
 class SobreNos(models.Model):
-    descrpcion = models.TextField()
-    imagen = models.ImageField(upload_to='imagen_sobre_nos')
+    descripcion = models.TextField()
+    medico = models.OneToOneField(Medico, related_name='sobreNos', on_delete=models.CASCADE)
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now_add=True)
 
     def agregar_descripcion(self, descripcion):
-        self.descrpcion = descripcion
+        self.descripcion = descripcion  
         return self.save()
+    
+    def __str__(self):
+        return f"Sobre {self.emprendedor.nombre}"  
+    
+# multiples imagenes como lugares referenciales etc
+class ImagenSobreNos(models.Model):
+    sobreNos = models.ForeignKey(SobreNos, related_name='imagenesSobreNos', on_delete=models.CASCADE)
+    imagen = models.ImageField(upload_to='imagen_sobre_nos')
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Imagen para {self.sobreNos.emprendedor.nombre}"
