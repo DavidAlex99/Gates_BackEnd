@@ -56,7 +56,27 @@ class Cita(models.Model):
 
     def __str__(self):
         return f"Cita para {self.medico.nombre} el {self.fecha_hora_inicio.strftime('%Y-%m-%d %H:%M')}"
+    
 
+class Servicio(models.Model):
+    nombre = models.CharField(max_length=100)
+    precio = models.DecimalField(max_digits=6, decimal_places=2, validators=[MinValueValidator(0.0)])
+    descripcion = models.CharField(max_length=100)
+    imagen = models.ImageField(upload_to='imagen_servicio')
+    medico = models.ForeignKey(Medico, related_name='servicios', on_delete=models.CASCADE)
+    created=models.DateTimeField(auto_now_add=True)
+    updated=models.DateTimeField(auto_now_add=True)
+
+    def definir_precio(self, precio):
+        self.precio = precio
+        return self.save()
+
+    def guardar_alimento(self):
+        return self.save()
+    
+    # como aparecera en el panel de administracion
+    def __str__(self):
+        return self.nombre
 
 # datos contacto van a estar apgados al consultorio
 class Contacto(models.Model):
@@ -81,7 +101,7 @@ class ImagenContacto(models.Model):
 
 
 # los  datos sobbreNos estan apegados a un consultorio
-class SobreNos(models.Model):
+class Perfil(models.Model):
     descripcion = models.TextField()
     medico = models.OneToOneField(Medico, related_name='sobreNos', on_delete=models.CASCADE)
     created=models.DateTimeField(auto_now_add=True)
@@ -95,8 +115,8 @@ class SobreNos(models.Model):
         return f"Sobre {self.emprendedor.nombre}"  
     
 # multiples imagenes como lugares referenciales etc
-class ImagenSobreNos(models.Model):
-    sobreNos = models.ForeignKey(SobreNos, related_name='imagenesSobreNos', on_delete=models.CASCADE)
+class ImagenPerfil(models.Model):
+    sobreNos = models.ForeignKey(Perfil, related_name='imagenesSobreNos', on_delete=models.CASCADE)
     imagen = models.ImageField(upload_to='imagen_sobre_nos')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
