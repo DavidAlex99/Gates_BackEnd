@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import MedicoForm, UserRegisterForm, ContactoForm, ImagenContactoFormSet
+from .forms import MedicoForm, UserRegisterForm, ContactoForm, ImagenContactoFormSet, PerfilForm, ImagenPerfilFormSet, ImagenPerfilForm
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from .models import Medico, Contacto
+from .models import Medico, Contacto, Perfil
 from django.contrib.auth.views import LoginView
 
 class CustomLoginView(LoginView):
@@ -72,7 +72,63 @@ def add_medico_profile(request, username):
         medico_form = MedicoForm()
     return render(request, 'medico_form.html', {'miFormularioMedico': medico_form})
 
+@login_required
+def subirPerfil(request, username, nombreEmprendimiento):
+    medico = get_object_or_404(Medico, user__username=username)
+    if request.method == 'POST':
+        form = PerfilForm(request.POST)
+        formset = ImagenPerfilForm(request.POST, request.FILES)
+        if form.is_valid() and formset.is_valid():
+            perfil = form.save(commit=False)
+            perfil.emprendimiento = medico
+            perfil.save()
+            formset.instance = perfil
+            formset.save()
+            return redirect('perfilDetalle', username=username)
+    else:
+        form = PerfilForm()
+        formset = ImagenPerfilFormSet()
+    return render(request, 'perfilSubir.html', {
+        'miFormularioPerfil': form,
+        'miFormularioImagenesPerfil': formset,
+        'username': username,
+    })
 
+
+@login_required
+def detallePerfil(request, username):
+    medico = get_object_or_404(Medico, user__username=username)
+    perfil = get_object_or_404(Perfil, medico=medico)
+    imagenes = perfil.imagenesPerfil.all()
+    return render(request, 'perfilDetalle.html', {
+        'perfil': perfil,
+        'imagenes': imagenes,
+        'medico': medico,
+        'username': username,
+    })
+
+@login_required
+def actualizarPerfil(request, username):
+    medico = get_object_or_404(Medico, user__username=username)
+    perfil, created = Perfil.objects.get_or_create(medico=medico)
+    if request.method == 'POST':
+        form = PerfilForm(request.POST, instance=perfil)
+        formset = ImagenPerfilFormSet(request.POST, request.FILES, instance=perfil)
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+            return redirect('perfilDetalle', username=username)
+    else:
+        form = PerfilForm(instance=perfil)
+        formset = ImagenPerfilFormSet(instance=perfil)
+
+    return render(request, 'perfilActualizar.html', {
+        'miFormularioPerfil': form,
+        'miFormularioImagenesPerfil': formset,
+        'perfil': perfil,
+        'medico': medico,
+        'username': username,
+    })
 
 @login_required
 def contactoSubir(request, username):

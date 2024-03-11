@@ -33,6 +33,10 @@ urlpatterns = [
     path('<username>/add_profile/', views.add_medico_profile, name='add_medico_profile'),
     path('logout/', views.logout_page, name='logout_page'),
 
+    path('<username>/perfil/subir', views.subirPerfil, name='subirPerfil'),
+    path('<username>/perfil/detalle', views.detallePerfil, name='detallePerfil'),
+    path('<username>/perfil/actualizar', views.actualizarPerfil, name='actualizarPerfil'),
+
     path('<username>/contacto/subir', views.contactoSubir, name='contactoSubir'),
     path('<username>/contacto/detalle', views.contactoDetalle, name='contactoDetalle'),
     path('<username>/contacto/actualizar', views.contactoActualizar, name='contactoActualizar'),

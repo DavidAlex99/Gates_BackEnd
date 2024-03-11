@@ -30,6 +30,22 @@ class Paciente(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+# perfil del paciente
+class Perfil(models.Model):
+    titulo = models.TextField()
+    descripcion = models.CharField(max_length=255)
+    medico = models.OneToOneField(Medico, related_name='perfil', on_delete=models.CASCADE)
+    created=models.DateTimeField(auto_now_add=True)
+    updated=models.DateTimeField(auto_now_add=True)
+
+# multiples imagenes como tiitulos, displomas etc
+class ImagenPerfil(models.Model):
+    perfil = models.ForeignKey(Perfil, related_name='imagenesPerfil', on_delete=models.CASCADE)
+    imagen = models.ImageField(upload_to='imagen_perfil')
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)
+    
 
 class Horario(models.Model):
     medico = models.ForeignKey(Medico, related_name='horarios', on_delete=models.CASCADE)
@@ -103,27 +119,3 @@ class ImagenContacto(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
 
-
-# los  datos sobbreNos estan apegados a un consultorio
-class Perfil(models.Model):
-    descripcion = models.TextField()
-    medico = models.OneToOneField(Medico, related_name='sobreNos', on_delete=models.CASCADE)
-    created=models.DateTimeField(auto_now_add=True)
-    updated=models.DateTimeField(auto_now_add=True)
-
-    def agregar_descripcion(self, descripcion):
-        self.descripcion = descripcion  
-        return self.save()
-    
-    def __str__(self):
-        return f"Sobre {self.emprendedor.nombre}"  
-    
-# multiples imagenes como lugares referenciales etc
-class ImagenPerfil(models.Model):
-    sobreNos = models.ForeignKey(Perfil, related_name='imagenesSobreNos', on_delete=models.CASCADE)
-    imagen = models.ImageField(upload_to='imagen_sobre_nos')
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Imagen para {self.sobreNos.emprendedor.nombre}"

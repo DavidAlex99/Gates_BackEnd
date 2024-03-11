@@ -35,6 +35,8 @@ class MedicoForm(forms.ModelForm):
             'especialidad': forms.Select(attrs={'class': 'form-control'}),
         }
 
+
+
 class CitaForm(forms.ModelForm):
     class Meta:
         model = Cita
@@ -93,9 +95,10 @@ ImagenContactoFormSet = inlineformset_factory(
 class PerfilForm(forms.ModelForm):
     class Meta:
         model = Perfil
-        fields = ['descripcion']
+        fields = ['descripcion', 'titulo']
         widgets = {
-            'descripcion': forms.TextInput(attrs={'class': 'form-control'}),
+            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control'}),
         }
 
 class ImagenPerfilForm(forms.ModelForm):
@@ -106,7 +109,7 @@ class ImagenPerfilForm(forms.ModelForm):
             'imagen': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
         }
 
-ImagenSobreNosFormSet = inlineformset_factory(
+ImagenPerfilFormSet = inlineformset_factory(
     Perfil, ImagenPerfil, 
     form=ImagenPerfilForm, 
     extra=4,  # Puedes ajustar el número de formularios extra que quieres mostrar.

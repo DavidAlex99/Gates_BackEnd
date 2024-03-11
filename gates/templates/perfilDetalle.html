@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Perfil</h2>
+    <p>{{ perfil.descripcion }}</p>
+    <div>
+        {% for imagen in imagenes %}
+            <img src="{{ imagen.imagen.url }}" alt="Imagen" style="width: 100px; height: auto;">
+        {% endfor %}
+    </div>
+    <a href="{% url 'perfilActualizar' username=username %}" class="btn btn-secondary">Actualizar</a>
+</div>
+{% endblock %}
