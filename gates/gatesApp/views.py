@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import MedicoForm, UserRegisterForm, ContactoForm, ImagenContactoFormSet, PerfilForm, ImagenPerfilFormSet, ImagenPerfilForm
+from .forms import MedicoForm, UserRegisterForm, ContactoForm, ImagenContactoFormSet, PerfilForm, ImagenPerfilFormSet, ImagenPerfilForm, ServicioForm
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from .models import Medico, Contacto, Perfil
+from .models import Medico, Contacto, Perfil, Servicio
 from django.contrib.auth.views import LoginView
 
 class CustomLoginView(LoginView):
@@ -73,17 +73,19 @@ def add_medico_profile(request, username):
     return render(request, 'medico_form.html', {'miFormularioMedico': medico_form})
 
 @login_required
-def subirPerfil(request, username, nombreEmprendimiento):
+def subirPerfil(request, username):
     medico = get_object_or_404(Medico, user__username=username)
     if request.method == 'POST':
         form = PerfilForm(request.POST)
-        formset = ImagenPerfilForm(request.POST, request.FILES)
+        formset = ImagenPerfilFormSet(request.POST, request.FILES)
         if form.is_valid() and formset.is_valid():
             perfil = form.save(commit=False)
-            perfil.emprendimiento = medico
+            perfil.medico = medico
             perfil.save()
-            formset.instance = perfil
-            formset.save()
+            instances = formset.save(commit=False)
+            for instance in instances:
+                instance.perfil = perfil
+                instance.save()
             return redirect('perfilDetalle', username=username)
     else:
         form = PerfilForm()
@@ -91,6 +93,7 @@ def subirPerfil(request, username, nombreEmprendimiento):
     return render(request, 'perfilSubir.html', {
         'miFormularioPerfil': form,
         'miFormularioImagenesPerfil': formset,
+        'medico': medico,
         'username': username,
     })
 
@@ -129,6 +132,73 @@ def actualizarPerfil(request, username):
         'medico': medico,
         'username': username,
     })
+
+# srvicios
+@login_required
+def servicios(request, username):
+    medico = get_object_or_404(Medico, user__username=username)
+    servicios_list = Servicio.objects.filter(medico=medico)
+
+    return render(request, 'servicios.html', {
+        'medico': medico,
+        'username': username,
+        'servicios_list': servicios_list,
+    })
+
+@login_required
+def subirServicio(request, username):
+    medico = get_object_or_404(Medico, user__username=username)
+
+    if request.method == 'POST':
+        form = ServicioForm(request.POST, request.FILES)
+        if form.is_valid():
+            servicio = form.save(commit=False)
+            servicio.medico = medico
+            servicio.save()
+            return redirect('servicios', username=username)
+    else:
+        # El campo 'emprendimiento' se establece automáticamente en la vista, oculto para el usuario.
+        form = ServicioForm(initial={'medico': medico})
+    
+    return render(request, 'servicioSubir.html', {
+        'username': username,
+        'miFormularioServicio': form,
+        'medico': medico
+    })
+
+
+@login_required
+def detalleServicio(request, username, id):
+    medico = get_object_or_404(Medico, user__username=username)
+    servicio = get_object_or_404(Servicio, id=id, medico=medico)
+    return render(request, 'servicioDetalle.html', {
+        'servicio': servicio,
+        'username': username,
+        'medico': medico,
+    })
+
+
+
+@login_required
+def actualizarServicio(request, username, id):
+    medico = get_object_or_404(Medico, user__username=username)
+    servicio = get_object_or_404(Servicio, id=id, medico=medico)
+    
+    if request.method == 'POST':
+        form = ServicioForm(request.POST, request.FILES, instance=servicio)
+        if form.is_valid():
+            form.save()
+            return redirect('servicios', username=username)
+    else:
+        form = ServicioForm(instance=servicio)
+    
+    return render(request, 'servicioActualizar.html', {
+        'username': username,
+        'miFormularioServicio': form,
+        'servicio': servicio,
+        'medico': medico
+    })
+# fin servicios
 
 @login_required
 def contactoSubir(request, username):

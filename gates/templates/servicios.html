@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h2>Servicios</h2>
+        <ul>
+            {% for servicio in servicios_list %}
+                <li>
+                    {{ servicio.nombre }} - 
+                    <div>
+                        <img src="{{ servicio.imagen.url }}" alt="Imagen de {{ servicio.nombre }}" width="300">
+                    </div>
+                    <a href="{% url 'servicioDetalle' username=username id=servicio.id %}">Ver Detalles</a> |
+                    <a href="{% url 'servicioActualizar' username=username id=servicio.id %}">Editar</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'servicioSubir' username=username %}" class="btn btn-primary">Agregar servicio</a>
+    </div>
+{% endblock %}

@@ -49,6 +49,8 @@
                                 </li>
                             {% endwith %}
 
+                            <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'servicios' username=user.username %}">Servicios</a></li>
+
 
                             {% with contacto_exists=medico.contacto_set.exists %}
                                 <li class="nav-item px-lg-4">

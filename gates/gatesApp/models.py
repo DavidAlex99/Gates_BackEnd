@@ -97,6 +97,8 @@ class Servicio(models.Model):
     # como aparecera en el panel de administracion
     def __str__(self):
         return self.nombre
+    
+
 
 # datos contacto van a estar apgados al consultorio
 class Contacto(models.Model):
