@@ -33,6 +33,9 @@ urlpatterns = [
     path('<username>/add_profile/', views.add_medico_profile, name='add_medico_profile'),
     path('logout/', views.logout_page, name='logout_page'),
 
+    path('<username>/contacto/subir', views.contactoSubir, name='contactoSubir'),
+    path('<username>/contacto/detalle', views.contactoDetalle, name='contactoDetalle'),
+    path('<username>/contacto/actualizar', views.contactoActualizar, name='contactoActualizar'),
 ]
 
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

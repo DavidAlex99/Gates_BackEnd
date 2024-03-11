@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import MedicoForm, UserRegisterForm
+from .forms import MedicoForm, UserRegisterForm, ContactoForm, ImagenContactoFormSet
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from .models import Medico
+from .models import Medico, Contacto
 from django.contrib.auth.views import LoginView
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'
+    # form_class = CustomLoginForm  # Asegúrate de definir este formulario si es necesario.
     redirect_authenticated_user = True
 
     def get_success_url(self):
@@ -73,3 +74,58 @@ def add_medico_profile(request, username):
 
 
 
+@login_required
+def contactoSubir(request, username):
+    medico = get_object_or_404(Medico, user__username=username)
+    if request.method == 'POST':
+        form = ContactoForm(request.POST)
+        formset = ImagenContactoFormSet(request.POST, request.FILES)
+        if form.is_valid() and formset.is_valid():
+            contacto = form.save(commit=False)
+            contacto.medico = medico
+            contacto.save()
+            formset.instance = contacto
+            formset.save()
+            return redirect('contactoDetalle', username=username)
+    else:
+        form = ContactoForm()
+        formset = ImagenContactoFormSet()
+    return render(request, 'contactoSubir.html', {
+        'miFormularioContacto': form,
+        'miFormularioImagenesContacto': formset,
+        'username': username,
+    })
+
+@login_required
+def contactoDetalle(request, username):
+    medico = get_object_or_404(Medico, user__username=username)
+    contacto = get_object_or_404(Contacto, medico=medico)
+    imagenes = contacto.imagenesContacto.all()
+    return render(request, 'contactoDetalle.html', {
+        'contacto': contacto,
+        'imagenes': imagenes,
+        'medico': medico,
+        'username': username,
+    })
+
+@login_required
+def contactoActualizar(request, username):
+    medico = get_object_or_404(Medico, user__username=username)
+    contacto, created = Contacto.objects.get_or_create(medico=medico)
+    if request.method == 'POST':
+        form = ContactoForm(request.POST, instance=contacto)
+        formset = ImagenContactoFormSet(request.POST, request.FILES, instance=contacto)
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+            return redirect('contactoDetalle', username=username)
+    else:
+        form = ContactoForm(instance=contacto)
+        formset = ImagenContactoFormSet(instance=contacto)
+    return render(request, 'contactoActualizar.html', {
+        'miFormularioContacto': form,
+        'miFormularioImagenesContacto': formset,
+        'contacto': contacto,
+        'medico': medico,
+        'username': username,
+    })

@@ -29,3 +29,5 @@ urlpatterns = [
     # y se incluye las URLs de la aplicación
     path('gatesApp/', include('gatesApp.urls')),
 ]
+
+urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
