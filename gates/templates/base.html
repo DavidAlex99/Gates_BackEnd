@@ -39,28 +39,27 @@
                             </li>
                     
                             <!-- para la sección de sobreNos -->
-                            {% with perfil_exists=medico.perfil_set.exists %}
-                                <li class="nav-item px-lg-4">
-                                {% if perfil_exists %}
+
+                            <li class="nav-item px-lg-4">
+                                {% if medico.perfil %}
                                     <a class="nav-link text-uppercase" href="{% url 'perfilDetalle' username=request.user.username %}">Ver Sobre Nosotros</a>
                                 {% else %}
                                     <a class="nav-link text-uppercase" href="{% url 'perfilSubir' username=request.user.username %}">Subir Sobre Nos</a>
                                 {% endif %}
-                                </li>
-                            {% endwith %}
+                            </li>
+
 
                             <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="{% url 'servicios' username=user.username %}">Servicios</a></li>
 
 
-                            {% with contacto_exists=medico.contacto_set.exists %}
-                                <li class="nav-item px-lg-4">
-                                {% if contacto_exists %}
+                            <li class="nav-item px-lg-4">
+                                {% if medico.contacto %}
                                     <a class="nav-link text-uppercase" href="{% url 'contactoDetalle' username=request.user.username %}">Ver Contacto</a>
                                 {% else %}
                                     <a class="nav-link text-uppercase" href="{% url 'contactoSubir' username=request.user.username %}">Subir Contacto</a>
                                 {% endif %}
-                                </li>
-                            {% endwith %}
+                            </li>
+
 
                             <form method="post" action="{% url 'logout' %}">
                                 {% csrf_token %}
