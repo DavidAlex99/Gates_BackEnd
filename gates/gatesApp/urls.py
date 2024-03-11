@@ -23,25 +23,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 # para el inicio de sesion
-from .views import user_profile, CustomLoginView, register
 from django.contrib.auth.views import LoginView, LogoutView
 
 
 urlpatterns = [
-    path('', views.home, name="Home"),
-    path('<str:username>/servicios/', views.servicios, name="Servicios"),
-    path('<str:username>/acerca/', views.acerca, name="Acerca"),
-    path('<str:username>/ubicacion/', views.ubicacion, name="Ubicacion"),
-    path('<str:username>/calendario/', views.calendario, name="Calendario"),
-    path('<str:username>/contacto/', views.contacto, name="Contacto"),
-    path('<str:username>/servicios/subirServicio/', views.subirServicio, name="SubirServicio"),
-    path('<str:username>/medico/crear/', views.crear_medico, name='Crear_medico'), 
-    # para el inciio de sesion
-    path('login/', CustomLoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('register/', register, name='register'),
-    path('<str:username>/', user_profile, name='user_profile'),
-    path('logout/', LogoutView.as_view(), name='logout'),
+    path('login/', views.CustomLoginView.as_view(), name='login'),
+    path('register/', views.register, name='register'),
+    path('<username>/home/', views.home, name='home'),
+    path('<username>/add_profile/', views.add_medico_profile, name='add_medico_profile'),
+    path('logout/', views.logout_page, name='logout_page'),
+
 ]
 
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

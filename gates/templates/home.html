@@ -7,11 +7,18 @@
 <!-- aqui va el contenido cambiante -->
 {% block content %}
 
-<div>
-    <button type="button" class="btn btn-primary" style="color: white;"><a href="{% url 'Crear_medico' username=user.username %}">Crear medico</a></button>
-</div>
+    {% if medico %}
+        <h1>Bienvenido, Dr. {{ medico.nombre }}</h1>
+        <p>{{ medico.descripcion }}</p>
+        <!-- Aquí puedes añadir más detalles, como una imagen, especialidad, etc. -->
+        <img src="{{ medico.imagen.url }}" alt="Imagen de perfil">
+        <p>Especialidad: {{ medico.get_especialidad_display }}</p>
 
+        <!-- Y enlaces a las otras secciones -->
 
-<p>Poner algo para la plantilla home</p>
+        <!-- etc. -->
+    {% else %}
+        <p>Perfil de médico no encontrado.</p>
+    {% endif %}
 
 {% endblock %}

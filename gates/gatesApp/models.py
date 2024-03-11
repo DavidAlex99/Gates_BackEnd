@@ -6,7 +6,9 @@ from django.core.validators import MinValueValidator
 # el medicodel consultorio
 class Medico(models.Model):
     ESPECIALIDAD = [
-        # Tus opciones de especialidades...
+        ('CARDIOLOGO', 'Cardiologo'),
+        ('PEDIATRA', 'Pediatra'),
+        ('NEUROLOGO', 'Neurologo'),
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -40,7 +42,9 @@ class Horario(models.Model):
 
 class Cita(models.Model):
     ESTADO = [
-        # Tus opciones de estado de cita...
+        ('DISPONIBLE', 'Disponible'),
+        ('CANCELADO', 'Cancelado'),
+        ('EJECUTANDOSE', 'Ejecutandose'),
     ]
 
     medico = models.ForeignKey(Medico, related_name='citas', on_delete=models.CASCADE)
