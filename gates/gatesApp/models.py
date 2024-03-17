@@ -89,9 +89,6 @@ class Servicio(models.Model):
     def definir_precio(self, precio):
         self.precio = precio
         return self.save()
-
-    def guardar_alimento(self):
-        return self.save()
     
     # como aparecera en el panel de administracion
     def __str__(self):

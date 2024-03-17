@@ -312,6 +312,8 @@ def contactoActualizar(request, username):
 class MedicoViewSet(viewsets.ModelViewSet):
     queryset = Medico.objects.all()
     serializer_class = MedicoSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['especialidad', 'nombre']
 
 class ServicioViewSet(viewsets.ModelViewSet):
     queryset = Servicio.objects.all()
@@ -343,3 +345,14 @@ def login_view(request):
         return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
     else:
         return Response({'message': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+    
+# para obtener el emprendimiento que quiero obtener mas detalles
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_medico(request, pk):
+    try:
+        medico = Medico.objects.get(pk=pk)
+        serializer = MedicoSerializer(medico)
+        return Response(serializer.data)
+    except Medico.DoesNotExist:
+        return Response(status=404)

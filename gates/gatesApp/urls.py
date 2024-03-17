@@ -58,6 +58,7 @@ urlpatterns = [
     # PASO 4: para el registro de usuario
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('register/', views.register, name='register'),
+    path('medicos/<int:pk>/', views.get_medico),
 ]
 
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
