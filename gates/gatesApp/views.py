@@ -1,13 +1,62 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import MedicoForm, UserRegisterForm, ContactoForm, ImagenContactoFormSet, PerfilForm, ImagenPerfilFormSet, ImagenPerfilForm, ServicioForm
-from django.contrib.auth.models import User
+from .models import Medico, Contacto, Perfil, Servicio, Paciente
+from django.contrib.auth import authenticate, login 
+
 from django.urls import reverse
-from django.contrib.auth import login
+
 from django.contrib.auth.decorators import login_required
-from .models import Medico, Contacto, Perfil, Servicio
+
 from django.contrib.auth.views import LoginView
 from .serializers import MedicoSerializer, ServicioSerializer
 from rest_framework import viewsets
+from django.contrib.auth.models import User
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import UserSerializer
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.models import Token
+from rest_framework import status
+from django.contrib.auth import authenticate, login 
+from rest_framework import generics, permissions, status
+from rest_framework.views import APIView
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, logout
+from .forms import CustomLoginForm
+from django.urls import reverse_lazy, reverse
+from django.views.generic import FormView
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.db import transaction
+from django.http import HttpResponseNotAllowed
+import os
+from django.contrib.auth.models import User
+from itertools import groupby
+from operator import attrgetter
+
+# para serialiara  traves de la API
+from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.response import Response    
+from rest_framework.authtoken.models import Token
+from rest_framework import status
+from django.contrib.auth import authenticate, login 
+from rest_framework import generics, permissions, status
+from rest_framework.views import APIView
+# fin para el registro de usuario
+
+# para serializar comidas, eventos, get emprendimiento
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+# fin para serializar  traves de la API
+
+
+
+from django.forms import inlineformset_factory
+
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'
@@ -268,4 +317,29 @@ class ServicioViewSet(viewsets.ModelViewSet):
     queryset = Servicio.objects.all()
     serializer_class = ServicioSerializer
 
-# PARTE 3: para el registro de clientes medicos
+# PASO 3: para el registro de clientes medicos
+@api_view(['POST'])
+def register(request):
+    user_serializer = UserSerializer(data=request.data)
+    if user_serializer.is_valid():
+        user = user_serializer.save()
+        nombre = request.data.get('nombre', None)
+        if nombre:
+            Paciente.objects.create(user=user, nombre=nombre)
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key}, status=status.HTTP_201_CREATED)  
+    return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['POST'])
+def login_view(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'message': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)

@@ -42,10 +42,19 @@ INSTALLED_APPS = [
     'crispy_forms', 
     'crispy_bootstrap4',
 
+    'rest_framework',
+    'rest_framework.authtoken',
     # PARTE 5: modulo agregado
     'corsheaders',
-    'rest_framework'
+    'django_filters',
+
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'dj_rest_auth.registration',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,6 +66,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # PARTE 5: modulo agregado
     'corsheaders.middleware.CorsMiddleware',
+    'allauth.account.middleware.AccountMiddleware'
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -115,6 +125,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

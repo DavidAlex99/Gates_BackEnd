@@ -28,6 +28,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 # para poder serializar os elementos
 from rest_framework.routers import DefaultRouter
 from .views import MedicoViewSet, ServicioViewSet
+from rest_framework.authtoken.views import obtain_auth_token
 
 router = DefaultRouter()
 router.register(r'medicos', MedicoViewSet)
@@ -55,7 +56,8 @@ urlpatterns = [
 
     path('', include(router.urls)),
     # PASO 4: para el registro de usuario
-
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('register/', views.register, name='register'),
 ]
 
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

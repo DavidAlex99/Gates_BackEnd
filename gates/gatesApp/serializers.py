@@ -1,5 +1,8 @@
 from rest_framework import serializers
-from .models import Medico, Perfil, ImagenPerfil, Horario, Cita, Servicio, Contacto, ImagenContacto
+from .models import Medico, Perfil, ImagenPerfil, Servicio, Contacto, ImagenContacto, Paciente
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
 
 class ImagenPerfilSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,6 +21,12 @@ class ServicioSerializer(serializers.ModelSerializer):
         model = Servicio
         fields = '__all__'
 
+class ImagenContactoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImagenContacto
+        fields = ('imagen', 'created', 'updated')
+
+
 class ContactoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contacto
@@ -31,3 +40,20 @@ class MedicoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medico
         fields = ('user', 'nombre', 'descripcion', 'edad', 'imagen', 'especialidad', 'perfil', 'servicios', 'contacto', 'created', 'updated')
+
+class UserSerializer(serializers.ModelSerializer): 
+    class Meta: 
+        model = User 
+        fields = ['id', 'username', 'email', 'password'] 
+        extra_kwargs = {'password': {'write_only': True}} 
+    def create(self, validated_data): 
+        user = User.objects.create_user( 
+            validated_data['username'], 
+            email=validated_data['email'], 
+            password=validated_data['password'] ) 
+        return user 
+
+class PacienteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Paciente
+        fields = ['nombre']
