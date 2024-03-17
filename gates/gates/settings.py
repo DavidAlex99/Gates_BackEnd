@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-xljl+u1o%ag+(7=_zyy7aop(#b3!w7)@n)+nfwwm-egs)2g44=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.100.6', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -41,6 +41,10 @@ INSTALLED_APPS = [
     'gatesApp',
     'crispy_forms', 
     'crispy_bootstrap4',
+
+    # PARTE 5: modulo agregado
+    'corsheaders',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -51,7 +55,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # PARTE 5: modulo agregado
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'gates.urls'
 
@@ -118,6 +126,15 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+# PASO 5:CONFIGURACION INICIO SESION, cof de correo
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_PORT = 465
+EMAIL_HOST_USER="a20051999rivera@gmail.com"
+EMAIL_HOST_PASSWORD="dwog johc tord udca"
 
 
 #direcotiro para las iamgenes

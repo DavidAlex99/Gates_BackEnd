@@ -3,7 +3,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 
-# el medicodel consultorio
 class Medico(models.Model):
     ESPECIALIDAD = [
         ('CARDIOLOGO', 'Cardiologo'),

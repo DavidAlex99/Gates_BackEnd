@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 # imortacion de las vistass
 from gatesApp import views
 
@@ -25,6 +25,13 @@ from django.conf.urls.static import static
 # para el inicio de sesion
 from django.contrib.auth.views import LoginView, LogoutView
 
+# para poder serializar os elementos
+from rest_framework.routers import DefaultRouter
+from .views import MedicoViewSet, ServicioViewSet
+
+router = DefaultRouter()
+router.register(r'medicos', MedicoViewSet)
+router.register(r'servicios', ServicioViewSet)
 
 urlpatterns = [
     path('login/', views.CustomLoginView.as_view(), name='login'),
@@ -45,6 +52,10 @@ urlpatterns = [
     path('<username>/contacto/subir', views.contactoSubir, name='contactoSubir'),
     path('<username>/contacto/detalle', views.contactoDetalle, name='contactoDetalle'),
     path('<username>/contacto/actualizar', views.contactoActualizar, name='contactoActualizar'),
+
+    path('', include(router.urls)),
+    # PASO 4: para el registro de usuario
+
 ]
 
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

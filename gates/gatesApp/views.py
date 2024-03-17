@@ -6,6 +6,8 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .models import Medico, Contacto, Perfil, Servicio
 from django.contrib.auth.views import LoginView
+from .serializers import MedicoSerializer, ServicioSerializer
+from rest_framework import viewsets
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'
@@ -255,3 +257,15 @@ def contactoActualizar(request, username):
         'medico': medico,
         'username': username,
     })
+
+# PARTE API
+# vista para hacer posible la vsta de los medicos
+class MedicoViewSet(viewsets.ModelViewSet):
+    queryset = Medico.objects.all()
+    serializer_class = MedicoSerializer
+
+class ServicioViewSet(viewsets.ModelViewSet):
+    queryset = Servicio.objects.all()
+    serializer_class = ServicioSerializer
+
+# PARTE 3: para el registro de clientes medicos

@@ -115,3 +115,4 @@ ImagenPerfilFormSet = inlineformset_factory(
     extra=4,  # Puedes ajustar el número de formularios extra que quieres mostrar.
     can_delete=True,  # Permite marcar imágenes para eliminar.
 )
+
