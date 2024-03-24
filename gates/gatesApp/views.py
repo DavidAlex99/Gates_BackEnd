@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import MedicoForm, UserRegisterForm, ContactoForm, ImagenContactoFormSet, PerfilForm, ImagenPerfilFormSet, ImagenPerfilForm, ServicioForm
+from .forms import MedicoForm, ContactoForm, ImagenContactoFormSet, PerfilForm, ImagenPerfilFormSet, ImagenPerfilForm, ServicioForm
 from .models import Medico, Contacto, Perfil, Servicio, Paciente
 from django.contrib.auth import authenticate, login 
 
@@ -23,7 +23,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, logout
-from .forms import CustomLoginForm
+from .forms import CustomMedicoLoginForm, MedicoRegisterForm
 from django.urls import reverse_lazy, reverse
 from django.views.generic import FormView
 from django.contrib.auth.decorators import login_required
@@ -60,26 +60,14 @@ from django.forms import inlineformset_factory
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'
-    # form_class = CustomLoginForm  # Asegúrate de definir este formulario si es necesario.
+    form_class = CustomMedicoLoginForm
     redirect_authenticated_user = True
 
     def get_success_url(self):
         # Después de iniciar sesión, redirigimos al usuario a su página 'home'.
         return reverse('home', kwargs={'username': self.request.user.username})
-    
-# La vista de registro de usuarios y médicos
-def register(request):
-    if request.method == 'POST':
-        user_form = UserRegisterForm(request.POST)
-        if user_form.is_valid():
-            user = user_form.save()
-            login(request, user)
-            # Redirigir al usuario para añadir el perfil del médico después del registro.
-            return redirect(reverse('add_medico_profile', kwargs={'username': user.username}))
-    else:
-        user_form = UserRegisterForm()
-    return render(request, 'register.html', {'user_form': user_form})
 
+# La vista del perfil de usuario
 @login_required
 def user_profile(request, username):
     # Asegúrate de que el nombre de usuario en la URL coincida con el usuario logueado
@@ -87,41 +75,65 @@ def user_profile(request, username):
         return redirect('user_profile', username=request.user.username)
     return render(request, 'user_profile.html', {'username': username})
 
+# La vista de registro de usuarios y médicos
+def registerMedico(request):
+    if request.method == 'POST':
+        user_form = MedicoRegisterForm(request.POST)
+        if user_form.is_valid():
+            user = user_form.save()
+            login(request, user)
+            # Redirigir al usuario para añadir el perfil del médico después del registro.
+            return redirect(reverse('agregarMedicoDetalles', kwargs={'username': user.username}))
+    else:
+        user_form = MedicoRegisterForm()
+    return render(request, 'register.html', {'user_form': user_form})
+
+
+
 # visa para cerrar sesion
 def logout_page(request):
     return render(request, 'logout_page.html')
 
+
+# actualizar el perfl
 @login_required
-def home(request, username):
-    # Asegúrate de que el nombre de usuario en la URL coincida con el usuario logueado
-    if username != request.user.username:
-        return redirect('home', username=request.user.username)
-        # Intenta obtener el perfil del médico, si no existe, podría redirigir a la página de creación del perfil
-    try:
-        medico = Medico.objects.get(user__username=username)
-    except Medico.DoesNotExist:
-        return redirect('add_medico_profile', username=username)
-    # Renderiza la página home con el contexto del médico
-    return render(request, 'home.html', {'medico': medico})
+def actualizarMedicoDetalles(request, username):
+    medico = get_object_or_404(Medico, user__username=username)
+    
+    if request.method == 'POST':
+        form = MedicoForm(request.POST, request.FILES, instance=medico)
+        if form.is_valid():
+            form.save()
+            return redirect('medicoHome', username=username)
+    else:
+        form = MedicoForm(instance=medico)
+    
+    return render(request, 'medicoActualizar.html', {
+        'username': username,
+        'miFormularioMedico': form,
+        'medico': medico
+    })
 
-
-
-# Vista para agregar perfil de médico
+# para subir los detalles del medico dspues de pulsar el bootn de registrarse
 @login_required
-def add_medico_profile(request, username):
-    if request.user.username != username:
-        return redirect('add_medico_profile', username=request.user.username)
+def agregarMedicoDetalles(request, username):
+    user = request.user
     if request.method == 'POST':
         medico_form = MedicoForm(request.POST, request.FILES)
         if medico_form.is_valid():
             medico = medico_form.save(commit=False)
-            medico.user = request.user
+            medico.user = user
             medico.save()
-            # Redirigir a la página de inicio del médico después de crear el perfil.
-            return redirect('home', username=username)
+            return redirect('medicoHome', username=user.username)
     else:
         medico_form = MedicoForm()
-    return render(request, 'medico_form.html', {'miFormularioMedico': medico_form})
+    return render(request, 'medicoFormSubir.html', {'miFormularioMedico': medico_form, 'username': username})
+
+# despues de inciiar sesion o registrarse
+@login_required
+def medicoHome(request, username):
+    medico = get_object_or_404(Medico, user__username=username)
+    return render(request, 'medicoHome.html', {'medico': medico})
 
 @login_required
 def subirPerfil(request, username):

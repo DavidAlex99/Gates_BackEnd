@@ -6,30 +6,29 @@ from django.contrib.auth.models import User
 
 
 # formulario personalizado para el inicio de sesion
-class CustomLoginForm(AuthenticationForm):
+class CustomMedicoLoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de usuario'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}))
-
 # formulario para muestreo para actualizar informacion como 
 # nobre, edad desues de registrar
-class UserRegisterForm(UserCreationForm):
+class MedicoRegisterForm(UserCreationForm):
+    email = forms.EmailField(
+        label='Ingrese su email',
+        required=True,
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = UserCreationForm.Meta.fields
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        if commit:
-            user.save()
-        return user
+        fields = ('username', 'email', 'password1', 'password2')
+    
 
 class MedicoForm(forms.ModelForm):
     class Meta:
         model = Medico
-        fields = ['nombre', 'descripcion', 'edad', 'imagen', 'especialidad']
+        fields = ['nombre', 'edad', 'imagen', 'especialidad']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'descripcion': forms.Textarea(attrs={'class': 'form-control'}),
             'edad': forms.NumberInput(attrs={'class': 'form-control'}),
             'imagen': forms.FileInput(attrs={'class': 'form-control'}),
             'especialidad': forms.Select(attrs={'class': 'form-control'}),

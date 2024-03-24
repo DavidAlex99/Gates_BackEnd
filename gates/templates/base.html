@@ -35,16 +35,21 @@
                         {% if request.user.is_authenticated %}
                             
                             <li class="nav-item px-lg-4">
-                                <a class="nav-link text-uppercase" href="{% url 'home' username=request.user.username %}">Home</a>
+                                <a class="nav-link text-uppercase" href="{% url 'medicoHome' username=request.user.username %}">Home</a>
+                            </li>
+
+                            <!-- para odifiacr campos del medico -->
+                            <li class="nav-item px-lg-4">
+                                <a class="nav-link text-uppercase" href="{% url 'medicoActualizar' username=request.user.username %}">Mi Perfil</a>
                             </li>
                     
                             <!-- para la sección de sobreNos -->
 
                             <li class="nav-item px-lg-4">
                                 {% if medico.perfil %}
-                                    <a class="nav-link text-uppercase" href="{% url 'perfilDetalle' username=request.user.username %}">Ver Sobre Nosotros</a>
+                                    <a class="nav-link text-uppercase" href="{% url 'perfilDetalle' username=request.user.username %}">Ver Sobre mi</a>
                                 {% else %}
-                                    <a class="nav-link text-uppercase" href="{% url 'perfilSubir' username=request.user.username %}">Subir Sobre Nos</a>
+                                    <a class="nav-link text-uppercase" href="{% url 'perfilSubir' username=request.user.username %}">Subir Sobre mi</a>
                                 {% endif %}
                             </li>
 

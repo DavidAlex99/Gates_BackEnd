@@ -36,9 +36,10 @@ router.register(r'servicios', ServicioViewSet)
 
 urlpatterns = [
     path('login/', views.CustomLoginView.as_view(), name='login'),
-    path('register/', views.register, name='register'),
-    path('<username>/home/', views.home, name='home'),
-    path('<username>/add_profile/', views.add_medico_profile, name='add_medico_profile'),
+    path('registerMedico/', views.registerMedico, name='registerMedico'),
+    path('<username>/medicoHome/', views.medicoHome, name='medicoHome'),
+    path('<username>/actualizarDatos/', views.actualizarMedicoDetalles, name='medicoActualizar'),
+    path('<username>/agregarMedicoDetalles/', views.agregarMedicoDetalles, name='agregarMedicoDetalles'),
     path('logout/', views.logout_page, name='logout_page'),
 
     path('<username>/perfil/subir', views.subirPerfil, name='perfilSubir'),
@@ -57,7 +58,7 @@ urlpatterns = [
     path('', include(router.urls)),
     # PASO 4: para el registro de usuario
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
-    path('register/', views.register, name='register'),
+    path('registerPaciente/', views.register, name='register'),
     path('medicos/<int:pk>/', views.get_medico),
 ]
 

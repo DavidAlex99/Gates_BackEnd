@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Actualizar mis datos</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ miFormularioMedico.as_p }}
+        <button type="submit" class="btn btn-primary">Actualizar datos</button>
+    </form>
+</div>
+{% endblock %}

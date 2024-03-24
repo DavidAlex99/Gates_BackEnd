@@ -12,14 +12,14 @@ class Medico(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100)
-    descripcion = models.CharField(max_length=100)
     edad = models.IntegerField()
     imagen = models.ImageField(upload_to='imagen_medico')
     especialidad = models.CharField(max_length=15, choices=ESPECIALIDAD, default='OTRO')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
     
-    # Otros campos y métodos relevantes para Medico...
+    def __str__(self):
+        return self.nombre
 
 class Paciente(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -42,6 +42,7 @@ class Perfil(models.Model):
 class ImagenPerfil(models.Model):
     perfil = models.ForeignKey(Perfil, related_name='imagenesPerfil', on_delete=models.CASCADE)
     imagen = models.ImageField(upload_to='imagen_perfil')
+    descripcion = models.CharField(max_length=255)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
     
